@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <title>Registration</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to bottom right, #b3e0ff, #b3ffb3, #ffb3b3);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 400px; /* Adjust the max-width as needed */
+            width: 100%;
+            margin: 0 auto;
+            overflow: hidden; /* Hide overflowing content */
+        }
+
+        #logo {
+            max-width: 200px;
+            height: auto;
+            margin-bottom: 20px;
+            border-radius: 50%;
+            border: 3px solid white; /* Add a border for a circular effect */
+            position: relative;
+            /* Adjust the positioning as needed */
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+            position: relative; /* Add this for positioning the eye icon */
+        }
+
+        #email,
+        #password {
+            width: 100%; /* Extend the width to 100% */
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 16px;
+        }
+
+        #register {
+            width: 80%;
+            font-size: 18px;
+            margin-top: 20px;
+        }
+
+        /* Add this style for the eye icon */
+        .password-toggle {
+            cursor: pointer;
+            position: absolute;
+            right: 10px;
+            top: 80%;
+            transform: translateY(-50%);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <img src="img.jpg" alt="Your Logo" id="logo">
+    
+    <form name="registration_form" id="registration_form" method="post" action="#" enctype="multipart/form-data">
+        <div class="row">
+            <div class="col-sm-12">
+                <!-- Registration form fields go here -->
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="text" name="email" id="email" class="form-control" placeholder="Enter your email">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" id="password" class="form-control" placeholder="Enter your password">
+                    <!-- Eye icon for password visibility toggle -->
+                    <i class="glyphicon glyphicon-eye-open password-toggle" id="eyeIcon"></i>
+                </div>
+
+                <button type="button" id="register" name="register" class="btn btn-success">Register Now</button>
+
+                <p style="margin-top: 20px;">Already registered? <a href="login.html">Login</a></p>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+<script type="module">
+    // Your Firebase configuration and registration code here
+   
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-auth.js";
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyDe6Dnc0i-ckQ2gYsJgm0nb5bYn0aTLeKU",
+        authDomain: "reg-auth-e8a35.firebaseapp.com",
+        projectId: "reg-auth-e8a35",
+        storageBucket: "reg-auth-e8a35.appspot.com",
+        messagingSenderId: "100501797391",
+        appId: "1:100501797391:web:38aa3641e15030787fc17a",
+        measurementId: "G-N3ENY7MXXS"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth();
+
+    document.getElementById("register").addEventListener("click", function() {
+        var email = document.getElementById("email").value;
+        var password = document.getElementById("password").value;
+
+        // For new registration
+        createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+            // Signed in 
+            const user = userCredential.user;
+            console.log(user);
+            alert("Registration successfully!!");
+            // Redirect to login page after successful registration
+            window.location.href = "login.html";
+        })
+        .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.log(errorMessage);
+            alert(error);
+        });
+    });
+
+    // Password visibility toggle logic
+    const passwordInput = document.getElementById("password");
+    const eyeIcon = document.getElementById("eyeIcon");
+
+    eyeIcon.addEventListener("click", function () {
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            eyeIcon.classList.remove("glyphicon-eye-open");
+            eyeIcon.classList.add("glyphicon-eye-close");
+        } else {
+            passwordInput.type = "password";
+            eyeIcon.classList.remove("glyphicon-eye-close");
+            eyeIcon.classList.add("glyphicon-eye-open");
+        }
+    });
+</script>
+
+</body>
+</html>
