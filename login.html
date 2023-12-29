@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <title>Login</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to bottom right, #b3e0ff, #b3ffb3, #ffb3b3);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 400px; /* Adjust the max-width as needed */
+            width: 100%;
+            margin: 0 auto;
+            overflow: hidden; /* Hide overflowing content */
+        }
+
+        #logo {
+            max-width: 200px;
+            height: auto;
+            margin-bottom: 20px;
+            border-radius: 50%;
+            border: 3px solid white; /* Add a border for a circular effect */
+            position: relative;
+            /* Adjust the positioning as needed */
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+            position: relative; /* Add this for positioning the eye icon */
+        }
+
+        #login_email,
+        #login_password {
+            width: 100%; /* Extend the width to 100% */
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 16px;
+        }
+
+        #login {
+            width: 80%;
+            font-size: 18px;
+            margin-top: 20px;
+        }
+
+        a {
+            color: #007bff; /* Blue color for links */
+        }
+
+        a:hover {
+            text-decoration: underline; /* Underline links on hover */
+        }
+
+        /* Add this style for the eye icon */
+        .password-toggle {
+            cursor: pointer;
+            position: absolute;
+            right: 10px;
+            top: 80%;
+            transform: translateY(-50%);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <img src="img.jpg" alt="Your Logo" id="logo">
+    
+    <form name="login_form" id="login_form" method="post" action="#" enctype="multipart/form-data">
+        <div class="row">
+            <div class="col-sm-12">
+                <!-- Login form fields go here -->
+                <div class="form-group">
+                    <label for="login_email">Email</label>
+                    <input type="text" name="login_email" id="login_email" class="form-control" placeholder="Enter your email">
+                </div>
+
+                <div class="form-group">
+                    <label for="login_password">Password</label>
+                    <input type="password" name="login_password" id="login_password" class="form-control" placeholder="Enter your password">
+                    <!-- Eye icon for password visibility toggle -->
+                    <i class="glyphicon glyphicon-eye-open password-toggle" id="eyeIcon"></i>
+                </div>
+
+                <button type="button" id="login" name="login" class="btn btn-success">Login</button>
+
+                <!-- Forgot Password link -->
+                <p style="margin-top: 10px;">
+                    <a href="#" id="forgotPassword">Forgot Password?</a>
+                </p>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+<script type="module">
+    // Your Firebase configuration and login code here
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-auth.js";
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyDe6Dnc0i-ckQ2gYsJgm0nb5bYn0aTLeKU",
+        authDomain: "reg-auth-e8a35.firebaseapp.com",
+        projectId: "reg-auth-e8a35",
+        storageBucket: "reg-auth-e8a35.appspot.com",
+        messagingSenderId: "100501797391",
+        appId: "1:100501797391:web:38aa3641e15030787fc17a",
+        measurementId: "G-N3ENY7MXXS"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth();
+
+    document.getElementById("login").addEventListener("click", function() {
+        var email = document.getElementById("login_email").value;
+        var password = document.getElementById("login_password").value;
+
+        signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+            // Signed in 
+            const user = userCredential.user;
+            console.log(user);
+            alert(user.email + " Login successfully!!!");
+            // Redirect to desired link after successful login
+            redirectToDesiredLink();
+        })
+        .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.log(errorMessage);
+            alert(errorMessage);
+        });
+    });
+
+    // Forgot Password functionality
+    document.getElementById("forgotPassword").addEventListener("click", function() {
+        var email = document.getElementById("login_email").value;
+
+        sendPasswordResetEmail(auth, email)
+            .then(() => {
+                // Password reset email sent successfully
+                alert("Password reset email sent. Check your email for further instructions.");
+            })
+            .catch((error) => {
+                // An error occurred
+                console.error(error.message);
+                alert("Password reset failed. Please try again later.");
+            });
+    });
+
+    // Password visibility toggle logic
+    const passwordInput = document.getElementById("login_password");
+    const eyeIcon = document.getElementById("eyeIcon");
+
+    eyeIcon.addEventListener("click", function () {
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            eyeIcon.classList.remove("glyphicon-eye-open");
+            eyeIcon.classList.add("glyphicon-eye-close");
+        } else {
+            passwordInput.type = "password";
+            eyeIcon.classList.remove("glyphicon-eye-close");
+            eyeIcon.classList.add("glyphicon-eye-open");
+        }
+    });
+
+    // Redirect to a desired link after successful login
+    function redirectToDesiredLink() {
+        window.location.href = "main.html";  // Replace with your desired link
+    }
+</script>
+
+</body>
+</html>
